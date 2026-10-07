@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Frontend prototype for a capstone pipe-inspection robot.">
+  <title>Pipe Inspection Robot Control</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Header: the connection indicator is a fixed mock status. -->
+    <header class="page-header">
+      <div>
+        <p class="eyebrow">CAPSTONE PROJECT <span aria-hidden="true">/</span> OPERATOR INTERFACE</p>
+        <h1>Pipe Inspection Robot Control</h1>
+      </div>
+      <div class="connection-badge"><span class="status-dot danger" aria-hidden="true"></span>Disconnected</div>
+    </header>
+
+    <div class="prototype-notice">
+      <span class="prototype-label">UI PROTOTYPE</span>
+      <p>Controls simulate interface changes only. No robot is connected.</p>
+    </div>
+
+    <main class="dashboard">
+      <!-- Camera: an intentionally empty viewing surface, without a stream. -->
+      <section class="panel camera-panel" aria-labelledby="camera-heading">
+        <div class="panel-header">
+          <h2 id="camera-heading">Live Camera</h2>
+          <span class="small-status"><span class="status-dot" aria-hidden="true"></span>Offline</span>
+        </div>
+        <div class="camera-placeholder">
+          <div class="camera-message">
+            <span class="camera-icon" aria-hidden="true"></span>
+            <h3>Live Camera Feed</h3>
+            <p>Waiting for robot connection...</p>
+          </div>
+          <span class="feed-label">VIDEO PREVIEW</span>
+        </div>
+        <div class="camera-footer"><span>Inspection view</span><span>Stream unavailable</span></div>
+      </section>
+
+      <!-- Motion buttons change local display state, never hardware state. -->
+      <section class="panel motion-panel" aria-labelledby="motion-heading">
+        <div class="panel-header">
+          <h2 id="motion-heading">Robot Motion Controls</h2>
+          <span class="panel-number" aria-hidden="true">01</span>
+        </div>
+        <div class="panel-body">
+          <!-- Speed is a text-only preference; it does not start or stop motion. -->
+          <div class="speed-control">
+            <h3 id="speed-heading">Speed Control</h3>
+            <div class="speed-options" role="group" aria-labelledby="speed-heading">
+              <button class="speed-button" type="button" data-speed="slow" aria-pressed="false">Slow</button>
+              <button class="speed-button is-active" type="button" data-speed="normal" aria-pressed="true">Normal</button>
+              <button class="speed-button" type="button" data-speed="fast" aria-pressed="false">Fast</button>
+            </div>
+          </div>
+          <!-- Arrow labels are accessible; numeric mappings live only in script.js.
+               STOP has its own handler and is not a directional command. -->
+          <div class="direction-pad" role="group" aria-label="Simulated robot direction">
+            <button class="motion-button" type="button" data-direction="forward" aria-label="Forward" aria-pressed="false"><span aria-hidden="true">↑</span></button>
+            <button class="motion-button" type="button" data-direction="upRight" aria-label="Forward right" aria-pressed="false"><span aria-hidden="true">↗</span></button>
+            <button class="motion-button" type="button" data-direction="right" aria-label="Right" aria-pressed="false"><span aria-hidden="true">→</span></button>
+            <button class="motion-button" type="button" data-direction="downRight" aria-label="Backward right" aria-pressed="false"><span aria-hidden="true">↘</span></button>
+            <button class="motion-button" type="button" data-direction="backward" aria-label="Backward" aria-pressed="false"><span aria-hidden="true">↓</span></button>
+            <button class="motion-button" type="button" data-direction="downLeft" aria-label="Backward left" aria-pressed="false"><span aria-hidden="true">↙</span></button>
+            <button class="motion-button" type="button" data-direction="left" aria-label="Left" aria-pressed="false"><span aria-hidden="true">←</span></button>
+            <button class="motion-button" type="button" data-direction="upLeft" aria-label="Forward left" aria-pressed="false"><span aria-hidden="true">↖</span></button>
+            <button id="motion-stop" class="motion-button stop is-active" type="button" aria-pressed="true"><span class="stop-icon" aria-hidden="true"></span>STOP</button>
+          </div>
+          <div class="steering-readout"><span>Direction</span><strong id="steering-direction">Stopped</strong></div>
+          <p class="control-hint">Click an arrow to simulate motion. STOP clears the selected direction.</p>
+        </div>
+      </section>
+
+      <!-- Telemetry remains mock data; direction reflects UI selections without degrees. -->
+      <section class="panel telemetry-panel" aria-labelledby="telemetry-heading">
+        <div class="panel-header"><h2 id="telemetry-heading">Telemetry</h2><span class="mock-label">MOCK DATA</span></div>
+        <dl class="telemetry-grid">
+          <div><dt>Distance Traveled</dt><dd>0.0 <span>m</span></dd></div>
+          <div><dt>Current Speed</dt><dd>0.0 <span>m/s</span></dd></div>
+          <div><dt>Direction</dt><dd id="steering-value" class="direction-value">Stopped</dd></div>
+          <div><dt>System Uptime</dt><dd class="uptime">00:00:00</dd></div>
+        </dl>
+      </section>
+
+      <!-- Status labels pair text with color, so color is never the only cue. -->
+      <section class="panel status-panel" aria-labelledby="status-heading">
+        <div class="panel-header"><h2 id="status-heading">Robot Status</h2><span class="mock-label">SIMULATED</span></div>
+        <dl class="status-list">
+          <div><dt>Robot Connection</dt><dd><span class="status-dot danger" aria-hidden="true"></span>Disconnected</dd></div>
+          <div><dt>Camera</dt><dd><span class="status-dot" aria-hidden="true"></span>Offline</dd></div>
+          <div><dt>Controller</dt><dd><span class="status-dot" aria-hidden="true"></span>Offline</dd></div>
+          <div><dt>Motion</dt><dd id="motion-readout" data-active="false"><span class="status-dot" aria-hidden="true"></span><span id="motion-status">Stopped</span></dd></div>
+        </dl>
+      </section>
+
+      <!-- Emergency stop is separate from normal navigation controls. -->
+      <section class="emergency-panel" aria-labelledby="emergency-heading">
+        <div><h2 id="emergency-heading">Emergency Stop</h2><p>Immediately stop simulated motion and clear the direction.</p></div>
+        <button id="emergency-stop" type="button"><span class="stop-icon" aria-hidden="true"></span>EMERGENCY STOP</button>
+      </section>
+      <p id="interaction-feedback" class="sr-only" role="status" aria-live="polite" aria-atomic="true">Simulation ready. Motion stopped.</p>
+    </main>
+
+    <footer class="page-footer"><span>PIPE INSPECTION ROBOT</span><span>Frontend draft <span aria-hidden="true">·</span> v0.1</span></footer>
+  </div>
+</body>
+</html>

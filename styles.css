@@ -1,0 +1,136 @@
+/* Theme and base: system fonts and local styles keep the draft dependency-free. */
+:root {
+  color-scheme: dark;
+  --background: #111416;
+  --panel: #1a1e21;
+  --surface: #242a2e;
+  --border: #343b40;
+  --text: #edf0f2;
+  --muted: #a0a9b0;
+  --accent: #efb16b;
+  --red: #fa7474;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--background); color: var(--text); font-family: "Segoe UI", Arial, sans-serif; font-size: 14px; line-height: 1.5; }
+button, input { font: inherit; }
+button { cursor: pointer; }
+button:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+h1, h2, h3, p, dl, dd { margin: 0; }
+h1 { font-size: clamp(22px, 2.2vw, 30px); font-weight: 600; letter-spacing: -0.7px; line-height: 1.3; }
+h2 { font-size: 15px; font-weight: 600; }
+.app-shell { max-width: 1500px; margin: 0 auto; padding: 30px 36px 20px; }
+
+/* Header and prototype notice. */
+.page-header { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding-bottom: 25px; }
+.eyebrow { color: var(--muted); font-size: 10px; font-weight: 600; letter-spacing: 1.5px; margin-bottom: 8px; }
+.eyebrow span { margin: 0 8px; color: #626e77; }
+.connection-badge { display: inline-flex; align-items: center; gap: 9px; border: 1px solid #5b3538; border-radius: 5px; background: #2b1e22; padding: 8px 13px; color: #ffb1b1; font-size: 12px; }
+.status-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #7c8790; flex-shrink: 0; }
+.status-dot.danger { background: var(--red); }
+.prototype-notice { display: flex; align-items: center; gap: 14px; border-top: 1px solid var(--border); padding: 17px 0 23px; color: var(--muted); font-size: 12px; }
+.prototype-label { color: var(--accent); font-size: 10px; letter-spacing: 1px; font-weight: 700; white-space: nowrap; }
+
+/* Dashboard layout: the camera gets most of the desktop width. */
+.dashboard { display: grid; grid-template-columns: minmax(0, 1.95fr) minmax(330px, 1fr); gap: 20px; align-items: start; }
+.panel { min-width: 0; border: 1px solid var(--border); background: var(--panel); border-radius: 8px; overflow: hidden; }
+.panel-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 57px; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+.small-status { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; }
+.panel-number, .mock-label { font-size: 10px; letter-spacing: 1px; color: var(--muted); }
+.panel-body { padding: 20px; }
+
+/* Camera placeholder: no media element, stream, or loading animation. */
+.camera-placeholder { position: relative; display: grid; place-items: center; aspect-ratio: 16 / 9; min-height: 300px; background: #0b0e10; margin: 12px; border: 1px solid #242b30; border-radius: 4px; }
+.camera-message { text-align: center; padding: 28px; }
+.camera-message h3 { font-size: 18px; font-weight: 500; color: #c0c7cc; margin: 22px 0 6px; }
+.camera-message p { color: #88939d; font-size: 13px; }
+.camera-icon { position: relative; display: block; width: 38px; height: 28px; border: 2px solid #56626b; border-radius: 5px; margin: 0 auto; }
+.camera-icon::after { content: ""; position: absolute; width: 12px; height: 16px; top: 4px; right: -14px; border: 2px solid #56626b; border-left: 0; border-radius: 0 3px 3px 0; }
+.feed-label { position: absolute; left: 15px; bottom: 13px; font: 10px Consolas, monospace; letter-spacing: 1.2px; color: #79848e; }
+.camera-footer { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 11px; padding: 0 20px 14px; }
+
+/* Text-only speed selection uses the same surfaces and accent as direction buttons.
+   Equal-width segments fit the existing panel; global keyboard focus styles apply. */
+.speed-control { margin-bottom: 22px; }
+.speed-control h3 { margin-bottom: 10px; color: var(--muted); font-size: 12px; font-weight: 600; }
+.speed-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.speed-button { min-height: 44px; padding: 10px 8px; border: 1px solid #404a51; background: var(--surface); color: var(--text); font-size: 13px; font-weight: 600; }
+.speed-button:first-child { border-radius: 5px 0 0 5px; }
+.speed-button:last-child { border-radius: 0 5px 5px 0; }
+.speed-button:hover { background: #323b41; border-color: #8e9ba5; }
+.speed-button.is-active { background: #352c23; border-color: var(--accent); color: var(--accent); box-shadow: inset 0 -3px 0 var(--accent); }
+.speed-button:focus-visible { position: relative; z-index: 1; }
+
+/* Circular direction pad: button centers sit on a ring at equal intervals.
+   Percentage positions and a square aspect ratio preserve symmetry on resize.
+   The larger STOP sits at the exact center, separate from the eight arrows. */
+.direction-pad { position: relative; width: 100%; max-width: 320px; aspect-ratio: 1; margin: 0 auto 22px; border: 1px solid var(--border); border-radius: 50%; background: #14181b; }
+.motion-button { position: absolute; left: var(--x, 50%); top: var(--y, 50%); transform: translate(-50%, -50%); display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 6px; width: 18%; aspect-ratio: 1; padding: 0; border: 1px solid #404a51; border-radius: 50%; background: var(--surface); color: var(--text); font-size: 13px; font-weight: 700; }
+.motion-button > span:not(.stop-icon) { font-family: "Segoe UI Symbol", Arial, sans-serif; font-size: 28px; line-height: 1; }
+.motion-button:hover { background: #323b41; border-color: #8e9ba5; }
+.motion-button.is-active:not(.stop) { background: #352c23; border-color: var(--accent); color: var(--accent); }
+.motion-button[data-direction="forward"] { --x: 50%; --y: 15%; }
+.motion-button[data-direction="upRight"] { --x: 74.75%; --y: 25.25%; }
+.motion-button[data-direction="right"] { --x: 85%; --y: 50%; }
+.motion-button[data-direction="downRight"] { --x: 74.75%; --y: 74.75%; }
+.motion-button[data-direction="backward"] { --x: 50%; --y: 85%; }
+.motion-button[data-direction="downLeft"] { --x: 25.25%; --y: 74.75%; }
+.motion-button[data-direction="left"] { --x: 15%; --y: 50%; }
+.motion-button[data-direction="upLeft"] { --x: 25.25%; --y: 25.25%; }
+.motion-button.stop { width: 28%; border-width: 2px; color: #ffb1b1; background: #4b252b; border-color: #a4525b; }
+.stop:hover, .stop.is-active { background: #602a31; border-color: var(--red); }
+.stop-icon { display: inline-block; width: 12px; height: 12px; border-radius: 1px; background: currentColor; }
+.steering-readout { display: flex; justify-content: space-between; gap: 10px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 12px; }
+.steering-readout > span { color: var(--muted); }
+.steering-readout strong { font-weight: 500; }
+.control-hint { font-size: 11px; color: var(--muted); margin-top: 10px; }
+
+/* Mock telemetry and status readouts use aligned, easily scanned values. */
+.telemetry-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 25px 0; }
+.telemetry-grid > div { padding: 0 20px; border-right: 1px solid var(--border); }
+.telemetry-grid > div:last-child { border-right: 0; }
+.telemetry-grid dt { color: var(--muted); font-size: 11px; margin-bottom: 12px; }
+.telemetry-grid dd { font-family: Consolas, "Courier New", monospace; font-size: clamp(21px, 2vw, 29px); letter-spacing: -1px; white-space: nowrap; }
+.telemetry-grid dd span { font-size: 13px; color: var(--muted); letter-spacing: 0; }
+.telemetry-grid .uptime { font-size: clamp(18px, 1.8vw, 25px); padding-top: 3px; }
+/* Direction words replace numeric steering telemetry without widening the card. */
+.telemetry-grid .direction-value { font-family: inherit; font-size: 17px; letter-spacing: 0; white-space: normal; overflow-wrap: anywhere; padding-top: 5px; }
+.status-list { padding: 8px 20px; }
+.status-list > div { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; font-size: 12px; }
+.status-list dt { color: var(--muted); }
+.status-list dd { display: flex; align-items: center; gap: 8px; }
+#motion-readout[data-active="true"] { color: var(--accent); }
+#motion-readout[data-active="true"] .status-dot { background: var(--accent); }
+
+/* Separate emergency control and quiet footer. */
+.emergency-panel { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 20px 24px; border: 1px solid #70383d; border-left: 3px solid var(--red); border-radius: 6px; background: #251b1e; }
+.emergency-panel h2 { color: #ffb1b1; }
+.emergency-panel p { margin-top: 4px; font-size: 12px; color: #c2a4aa; }
+#emergency-stop { display: flex; justify-content: center; align-items: center; gap: 12px; min-height: 52px; padding: 14px 25px; border: 1px solid #ff9292; border-radius: 5px; background: #be343f; color: #fff; font-weight: 700; font-size: 13px; letter-spacing: 0.5px; white-space: nowrap; }
+#emergency-stop:hover { background: #dc414d; }
+.page-footer { display: flex; justify-content: space-between; gap: 15px; padding-top: 22px; color: #8c979f; font-size: 10px; letter-spacing: 0.8px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+
+/* Responsive layouts preserve readable panels and generously sized controls. */
+@media (max-width: 1100px) {
+  .app-shell { padding: 24px; }
+  .dashboard { grid-template-columns: minmax(0, 1.5fr) minmax(310px, 1fr); gap: 16px; }
+  .telemetry-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 0; }
+  .telemetry-grid > div:nth-child(2) { border-right: 0; }
+}
+@media (max-width: 800px) {
+  .dashboard { grid-template-columns: minmax(0, 1fr); }
+  .camera-placeholder { min-height: 240px; }
+}
+@media (max-width: 520px) {
+  .app-shell { padding: 20px 14px; }
+  .page-header { align-items: flex-start; flex-direction: column; gap: 14px; padding-bottom: 18px; }
+  .eyebrow { font-size: 9px; letter-spacing: 1px; }
+  .prototype-notice { align-items: flex-start; flex-direction: column; gap: 6px; }
+  .panel-header { padding: 15px; }
+  .panel-body { padding: 16px; }
+  .camera-placeholder { min-height: 220px; margin: 8px; }
+  .camera-message { padding: 20px; }
+  .emergency-panel { align-items: stretch; flex-direction: column; padding: 20px; gap: 16px; }
+  .page-footer { font-size: 9px; letter-spacing: 0.3px; }
+}
